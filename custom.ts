@@ -29,4 +29,54 @@ namespace DFrobotMAXBOT {
             }
         }
     }
+    //% blockid=MAXBOT_see
+    //% block="MAXBOT|see"
+    export function see(): string {
+        let see: string = "NOTHING"
+        let pingDistancesNow: number[] = []
+        let foundDirection = 0
+        let PingDistancesTminus1: number[] = []
+        let pingDistanceTminus1 = 0
+        let directionFinderIndex = 0
+        let directionNow = 0
+        let pingDistanceNow = 0
+        let compassHeadingNow = 0
+        let pingDirectionClockDegrees = 0
+        let pingDirectionClockNumber: number[] = []
+        let pingDirectionName: string[] = []
+        pingDirectionName = ["NNE", "ENE", "E", "ESE", "SSE", "S", "SSW", "WSW", "W", "WNW", "NNW", "N"]
+        pingDirectionClockNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        pingDirectionClockDegrees = 30
+        let mbi: number = 0
+        while (mbi < 3) {
+            control.waitMicros(100)
+            compassHeadingNow = input.compassHeading()
+            pingDistanceNow = sonar.ping(
+                DigitalPin.P1,
+                DigitalPin.P2,
+                PingUnit.Centimeters
+            )
+            directionNow = 13
+            directionFinderIndex = 0
+            while (directionNow > 12) {
+                if (compassHeadingNow < pingDirectionClockDegrees / 2 + pingDirectionClockDegrees * directionFinderIndex) {
+                    directionNow = directionFinderIndex
+                    if (directionFinderIndex > 11) {
+                        directionNow = 0
+                    }
+                    foundDirection = 1
+                } else {
+                    directionFinderIndex += 1
+                }
+            }
+            pingDistanceTminus1 = PingDistancesTminus1[directionNow]
+            PingDistancesTminus1[directionNow] = pingDistancesNow[directionNow]
+            pingDistancesNow[directionNow] = pingDistanceNow
+            if (pingDistanceTminus1 >= pingDistanceNow) {
+                see = "APPROACHING"
+            }
+            mbi = mbi + 1
+        }
+        return see
+    }
 }

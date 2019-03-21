@@ -5,3 +5,11 @@ basic.showLeds(`
     # . . . #
     . # # # .
     `);
+
+images.createImage(`
+. . . . .
+. . . . .
+. . # . .
+. . . . .
+. . . . .
+`)

@@ -4,7 +4,8 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "radio": "*"
+        "radio": "*",
+        "pxt-sonar": "github:microsoft/pxt-sonar#v0.0.5"
     },
     "files": [
         "README.md",
@@ -14,5 +15,6 @@
     "testFiles": [
         "test.ts"
     ],
-    "public": false
+    "public": false,
+    "installedVersion": "workspace:7be4d03b-2f0f-44ba-0863-713370e84942"
 }
