@@ -72,7 +72,7 @@ namespace DFrobotMAXBOT {
             pingDistanceTminus1 = PingDistancesTminus1[directionNow]
             PingDistancesTminus1[directionNow] = pingDistancesNow[directionNow]
             pingDistancesNow[directionNow] = pingDistanceNow
-            if (pingDistanceTminus1 >= pingDistanceNow) {
+            if (pingDistanceTminus1 > pingDistanceNow) {
                 see = "APPROACHING"
             }
             mbi = mbi + 1
