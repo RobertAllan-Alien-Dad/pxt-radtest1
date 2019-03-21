@@ -79,4 +79,13 @@ namespace DFrobotMAXBOT {
         }
         return see
     }
+    //% blockid=MAXBOT_see
+    //% block="MAXBOT|see %v"
+    export function sees( v: string ): boolean {
+        if (see() == v) {
+            return true
+        } else {
+            return false
+        }
+    }
 }
