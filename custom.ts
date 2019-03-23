@@ -67,9 +67,9 @@ namespace DFrobotMAXBOT {
         } else {
             see = "STANDING"
         }
-        if (pingDistanceNow > 10) {
+        if (pingDistanceNow > 140) {
             see = see + " DISTANT"
-        } else if (pingDistanceNow > 4) {
+        } else if (pingDistanceNow > 23) {
             see = see + " MIDRANGE"
         } else {
             see = see + " CLOSE"
