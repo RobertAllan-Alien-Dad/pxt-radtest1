@@ -38,100 +38,110 @@ namespace DFrobotMAXBOT {
     export function ping(): string {
         let see: string = "NOTHING"
         let pingDistanceTminus1: number = 0
-        let directionNow: number = facing_num()
-        let pingDistanceNow = 0
+        let pingDistanceNow: number = 0
+        let pingTotalDistance: number = 0
+        let pingAveDistance: number = 0
         let trend: number = 0
-        let oldPingDistance: number = undefined
         let mbi: number = 0
-        while (mbi < 5) {
-            control.waitMicros(100)
+        while (pingTotalDistance < 300) {
+            control.waitMicros(10)
             pingDistanceNow = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            pingDistanceTminus1 = pingDistancesTminus1[directionNow]
-            pingDistancesTminus1[directionNow] = pingDistancesNow[directionNow]
-            pingDistancesNow[directionNow] = pingDistanceNow
+            if (pingDistanceTminus1 == 0) {
+                pingDistanceTminus1 = pingDistanceNow
+            }
             if (pingDistanceTminus1 > pingDistanceNow) {
                 trend = trend - 1;
             } else if (pingDistanceTminus1 < pingDistanceNow) {
-               trend = trend + 1;
+                trend = trend + 1;
             }
+            pingTotalDistance = pingTotalDistance + pingDistanceNow
+            pingDistanceTminus1 = pingDistanceNow
             mbi = mbi + 1
         }
-        if (trend > 0) {
-            see = "APPROACHING"
-        } else if (trend < 0) {
+        pingAveDistance = pingTotalDistance / mbi
+        if (trend > 3) {
             see = "FLEEING"
+        } else if (trend < -3) {
+            see = "APPROACHING"
         } else {
             see = "STANDING"
         }
-        if (pingDistanceNow > 140) {
+        if (pingAveDistance > 140) {
             see = see + " DISTANT"
-        } else if (pingDistanceNow > 23) {
+        } else if (pingAveDistance > 23) {
             see = see + " MIDRANGE"
         } else {
             see = see + " CLOSE"
         }
         return see
     }
-    //% blockid=MAXBOT_ping_dist
-    //% block="MAXBOT|ping_dist"
-    export function ping_dist(): number {
+    //% blockid=MAXBOT_ping_distance
+    //% block="MAXBOT|ping_distance"
+    export function ping_distance(): number {
         let see: string = "NOTHING"
         let pingDistanceTminus1: number = 0
-        let directionNow: number = facing_num()
-        let pingDistanceNow = 0
+        let pingDistanceNow: number = 0
+        let pingTotalDistance: number = 0
+        let pingAveDistance: number = 0
         let trend: number = 0
-        let oldPingDistance: number = undefined
         let mbi: number = 0
-        while (mbi < 5) {
-            control.waitMicros(100)
+        while (pingTotalDistance < 300) {
+            control.waitMicros(10)
             pingDistanceNow = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            pingDistanceTminus1 = pingDistancesTminus1[directionNow]
-            pingDistancesTminus1[directionNow] = pingDistancesNow[directionNow]
-            pingDistancesNow[directionNow] = pingDistanceNow
+            if (pingDistanceTminus1 == 0) {
+                pingDistanceTminus1 = pingDistanceNow
+            }
             if (pingDistanceTminus1 > pingDistanceNow) {
                 trend = trend - 1;
             } else if (pingDistanceTminus1 < pingDistanceNow) {
                 trend = trend + 1;
             }
+            pingTotalDistance = pingTotalDistance + pingDistanceNow
+            pingDistanceTminus1 = pingDistanceNow
             mbi = mbi + 1
         }
-        return pingDistanceNow
+        pingAveDistance = pingTotalDistance / mbi
+        return pingAveDistance
     }
+
     //% blockid=MAXBOT_ping_trend
     //% block="MAXBOT|ping_trend"
     export function ping_trend(): number {
         let see: string = "NOTHING"
         let pingDistanceTminus1: number = 0
-        let directionNow: number = facing_num()
-        let pingDistanceNow = 0
+        let pingDistanceNow: number = 0
+        let pingTotalDistance: number = 0
+        let pingAveDistance: number = 0
         let trend: number = 0
-        let oldPingDistance: number = undefined
         let mbi: number = 0
-        while (mbi < 5) {
-            control.waitMicros(100)
+        while (pingTotalDistance < 300) {
+            control.waitMicros(10)
             pingDistanceNow = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            pingDistanceTminus1 = pingDistancesTminus1[directionNow]
-            pingDistancesTminus1[directionNow] = pingDistancesNow[directionNow]
-            pingDistancesNow[directionNow] = pingDistanceNow
+            if (pingDistanceTminus1 == 0) {
+                pingDistanceTminus1 = pingDistanceNow
+            }
             if (pingDistanceTminus1 > pingDistanceNow) {
                 trend = trend - 1;
             } else if (pingDistanceTminus1 < pingDistanceNow) {
-                trend = trend + 1;
+               trend = trend + 1;
             }
+            pingTotalDistance = pingTotalDistance + pingDistanceNow
+            pingDistanceTminus1 = pingDistanceNow
             mbi = mbi + 1
         }
+        pingAveDistance = pingTotalDistance / mbi
         return trend
     }
     //% blockid=MAXBOT_facing
