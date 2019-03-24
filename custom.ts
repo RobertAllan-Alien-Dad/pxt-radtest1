@@ -43,8 +43,8 @@ namespace DFrobotMAXBOT {
         let pingAveDistance: number = 0
         let trend: number = 0
         let mbi: number = 0
-        while (pingTotalDistance < 300) {
-            control.waitMicros(10)
+        while (pingTotalDistance < 500) {
+            // control.waitMicros(10)
             pingDistanceNow = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
