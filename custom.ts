@@ -80,8 +80,8 @@ namespace DFrobotMAXBOT {
         }
         return see
     }    
-    //% blockid=MAXBOT_ping_number
-    //% block="MAXBOT|ping_number"
+    //% blockid=MAXBOT_ping_delta
+    //% block="MAXBOT|ping_delta"
     export function ping_delta(): number {
         let see: string = "NOTHING"
         let pingTotalDelta: number = 1
