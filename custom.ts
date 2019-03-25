@@ -45,7 +45,7 @@ namespace DFrobotMAXBOT {
     export function ping(): string {
         let see: string = "NOTHING"
         let mbi: number = 0
-        while ((pingTotalDistance < 500) || !(!(mbi == 0) && (mbi % 2 == 0))) {
+        while ((pingTotalDistance < 1000) || !(!(mbi == 0) && (mbi % 2 == 0))) {
             pingDistanceTminus1 = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
