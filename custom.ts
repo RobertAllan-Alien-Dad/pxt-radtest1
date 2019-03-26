@@ -46,7 +46,7 @@ namespace DFrobotMAXBOT {
         let see: string = "NOTHING"
         let mbi: number = 0
         pingTotalDistance = 0
-        while ((pingTotalDistance < 1000) || !((mbi == 0) || (mbi % 2 == 0))) {
+        while ((pingTotalDistance < 5000) || !((mbi == 0) || (mbi % 2 == 0))) {
             pingDistanceTminus1 = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
@@ -60,7 +60,7 @@ namespace DFrobotMAXBOT {
             )
             pingDistancesTminus1[mbi] = pingDistanceTminus1
             pingDistancesNow[mbi] = pingDistanceNow
-            pingTotalDistance = pingDistanceNow + pingDistanceTminus1
+            pingTotalDistance = pingTotalDistance + pingDistanceNow + pingDistanceTminus1
             pingDeltas[mbi] = (pingDistanceNow - pingDistanceTminus1)
             mbi = mbi + 1
         }
@@ -73,8 +73,9 @@ namespace DFrobotMAXBOT {
         pingAveDistance = (pingDistanceNow + pingDistanceTminus1) / 2
     
         // get median of deltas over 100 microseconds
-        sortedArray = pingDeltas.sort()
-        pingMedianDelta = sortedArray[mbi/2]
+        //sortedArray = pingDeltas.sort()
+        //pingMedianDelta = sortedArray[mbi/2]
+        pingMedianDelta = pingDistanceNow - pingDistanceTminus1
 
         if (Math.abs(pingMedianDelta) > (pingAveDistance / 5)) {
             if (pingMedianDelta > 0) {
