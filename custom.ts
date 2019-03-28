@@ -65,17 +65,45 @@ namespace DFrobotMAXBOT {
             mbi = mbi + 1
         }
         // get Median of each set of distance readings
-        sortedArray = pingDistancesTminus1.sort()
-        pingDistanceTminus1 = sortedArray[mbi/2]
-        sortedArray = pingDistancesNow.sort()
-        pingDistanceNow = sortedArray[mbi/2]
+        //sortedArray = pingDistancesTminus1.sort()
+        //pingDistanceTminus1 = sortedArray[mbi/2]
+        //sortedArray = pingDistancesNow.sort()
+        //pingDistanceNow = sortedArray[mbi/2]
         // get arithmetric mean of those medians
-        pingAveDistance = (pingDistanceNow + pingDistanceTminus1) / 2
-    
+        //pingAveDistance = (pingDistanceNow + pingDistanceTminus1) / 2
+ 
+        let mbi2: number = mbi
+        pingDistanceTminus1 = 1
+        while (mbi2 > 0) {
+            mbi2 = mbi2 - 1
+            //pingDistanceTminus1 = pingDistanceTminus1 + 1
+            //pingDistanceTminus1 = pingDistanceTminus1 + pingDistancesTminus1[mbi2]
+            pingDistanceTminus1 = pingDistanceTminus1 * pingDistancesTminus1[mbi2] 
+        }
+        pingDistanceTminus1 = pingDistanceTminus1 ** (1.0 / mbi) //* .001) //Math.log(pingDistanceTminus1))
+        //pingDistanceTminus1 = Math.pow(pingDistanceTminus1,1.0/mbi)
+        // pingDistanceTminus1 = pingDistanceTminus1 / mbi
+
+        mbi2 = mbi
+        pingDistanceNow = 1
+        while (mbi2 > 0) {
+            mbi2 = mbi2 - 1
+ //           pingDistanceNow = pingDistanceNow + pingDistancesNow[mbi2]
+            pingDistanceNow = pingDistanceNow * pingDistancesNow[mbi2] 
+        }
+        pingDistanceNow = pingDistanceNow ** (1.0/mbi) //Math.exp((1.0 / mbi) * .001) //Math.log(pingDistanceNow))
+        //pingDistanceNow = Math.pow(pingDistanceNow, 1.0/mbi)
+        //pingDistanceNow = pingDistanceNow / mbi
+
+        //pingAveDistance = (pingDistanceNow + pingDistanceTminus1) * 0.5
+        pingAveDistance = 939 //Math.pow((pingDistanceNow * pingDistanceTminus1), 0.5)
+
         // get median of deltas over 100 microseconds
         //sortedArray = pingDeltas.sort()
         //pingMedianDelta = sortedArray[mbi/2]
+        //pingMedianDelta = pingDistanceNow - pingDistanceTminus1
         pingMedianDelta = pingDistanceNow - pingDistanceTminus1
+
 
         if (Math.abs(pingMedianDelta) > (pingAveDistance / 5)) {
             if (pingMedianDelta > 0) {
