@@ -56,7 +56,7 @@ namespace DFrobotMAXBOT {
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            if (pingDistanceImmediate == 0) {
+            if (pingDistanceImmediate > 0) {
                 pingDistances[mbi] = pingDistanceImmediate
                 pingTotalDistance = pingTotalDistance + pingDistanceImmediate
                 mbi = mbi + 1
