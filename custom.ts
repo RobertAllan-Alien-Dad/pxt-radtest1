@@ -2,12 +2,15 @@
 namespace DFrobotMAXBOT {
     let pingTotalDistance: number = 0
     let pingAveDistance: number = 0
-    let pingDistanceTminus1: number = 0
-    let pingDistanceNow: number = 0
-    let pingDistancesTminus1: number[] = [0, 0]
-    let pingDistancesNow: number[] = [0, 0]
+    let pingDistance: number = 0
+    let pingDistanceImmediate: number = 0
+    let mbi: number = 0
+    let mbi2: number = 0
+    let pingZeroResultCounter: number = 0
+    let pingDistances: number[] = [0, 0]
     let pingDeltas: number[] = [0, 0]
     let pingMedianDelta: number = 0
+    let pingExp: number = 0.3333
     let sortedArray: number[] = []
     let pingDirectionName: Array<string> = ["N", "NNE", "ENE", "E", "ESE", "SSE", "S", "SSW", "WSW", "W", "WNW", "NNW"]
     let pingDirectionClockDegrees = 30
@@ -44,97 +47,54 @@ namespace DFrobotMAXBOT {
     //% block="MAXBOT|ping"
     export function ping(): string {
         let see: string = "NOTHING"
-        let mbi: number = 0
+        mbi = 0
+        mbi2 = 0
         pingTotalDistance = 0
-        while ((pingTotalDistance < 5000) || !((mbi == 0) || (mbi % 2 == 0))) {
-            pingDistanceTminus1 = sonar.ping(
+        while (((mbi2 < 200) && ((pingTotalDistance < 15000) || !((mbi == 0) || (mbi % 2 == 0))))) {
+            pingDistanceImmediate = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            control.waitMicros(100)
-            pingDistanceNow = sonar.ping(
-                DigitalPin.P1,
-                DigitalPin.P2,
-                PingUnit.Centimeters
-            )
-            pingDistancesTminus1[mbi] = pingDistanceTminus1
-            pingDistancesNow[mbi] = pingDistanceNow
-            pingTotalDistance = pingTotalDistance + pingDistanceNow + pingDistanceTminus1
-            pingDeltas[mbi] = (pingDistanceNow - pingDistanceTminus1)
-            mbi = mbi + 1
-        }
-        // get Median of each set of distance readings
-        //sortedArray = pingDistancesTminus1.sort()
-        //pingDistanceTminus1 = sortedArray[mbi/2]
-        //sortedArray = pingDistancesNow.sort()
-        //pingDistanceNow = sortedArray[mbi/2]
-        // get arithmetric mean of those medians
-        //pingAveDistance = (pingDistanceNow + pingDistanceTminus1) / 2
- 
-        let mbi2: number = mbi
-        pingDistanceTminus1 = 1
-        while (mbi2 > 0) {
-            mbi2 = mbi2 - 1
-            //pingDistanceTminus1 = pingDistanceTminus1 + 1
-            //pingDistanceTminus1 = pingDistanceTminus1 + pingDistancesTminus1[mbi2]
-            pingDistanceTminus1 = pingDistanceTminus1 * pingDistancesTminus1[mbi2] 
-        }
-        pingDistanceTminus1 = pingDistanceTminus1 ** (1.0 / mbi) //* .001) //Math.log(pingDistanceTminus1))
-        //pingDistanceTminus1 = Math.pow(pingDistanceTminus1,1.0/mbi)
-        // pingDistanceTminus1 = pingDistanceTminus1 / mbi
-
-        mbi2 = mbi
-        pingDistanceNow = 1
-        while (mbi2 > 0) {
-            mbi2 = mbi2 - 1
- //           pingDistanceNow = pingDistanceNow + pingDistancesNow[mbi2]
-            pingDistanceNow = pingDistanceNow * pingDistancesNow[mbi2] 
-        }
-        pingDistanceNow = pingDistanceNow ** (1.0/mbi) //Math.exp((1.0 / mbi) * .001) //Math.log(pingDistanceNow))
-        //pingDistanceNow = Math.pow(pingDistanceNow, 1.0/mbi)
-        //pingDistanceNow = pingDistanceNow / mbi
-
-        //pingAveDistance = (pingDistanceNow + pingDistanceTminus1) * 0.5
-        pingAveDistance = 939 //Math.pow((pingDistanceNow * pingDistanceTminus1), 0.5)
-
-        // get median of deltas over 100 microseconds
-        //sortedArray = pingDeltas.sort()
-        //pingMedianDelta = sortedArray[mbi/2]
-        //pingMedianDelta = pingDistanceNow - pingDistanceTminus1
-        pingMedianDelta = pingDistanceNow - pingDistanceTminus1
-
-
-        if (Math.abs(pingMedianDelta) > (pingAveDistance / 5)) {
-            if (pingMedianDelta > 0) {
-                see = "FLEEING"
-            } else {
-                see = "APPROACHING"
+            if (pingDistanceImmediate == 0) {
+                pingDistances[mbi] = pingDistanceImmediate
+                pingTotalDistance = pingTotalDistance + pingDistanceImmediate
+                mbi = mbi + 1
             }
-        } else {
-            see = "STANDING"
+            mbi2 = mbi2 + 1
         }
+
+        // get Median of each set of distance readings
+        sortedArray = pingDistances.sort()
+        pingDistance = sortedArray[mbi / 2]
+
+        // get arithmetric mean of those medians
+        pingAveDistance = pingDistance
+
         if (pingAveDistance > 140) {
-            see = see + " DISTANT"
+            see = see + "DISTANT"
         } else if (pingAveDistance > 50) {
-            see = see + " MIDRANGE"
+            see = see + "MIDRANGE"
         } else {
-            see = see + " CLOSE"
+            see = see + "CLOSE"
         }
         return see
-    }    
-    //% blockid=MAXBOT_ping_delta
-    //% block="MAXBOT|ping_delta"
-    export function ping_delta(): number {
-        ping()
-        return pingMedianDelta
-    }    
+    }
+
     //% blockid=MAXBOT_ping_distance
     //% block="MAXBOT|ping_distance"
     export function ping_distance(): number {
         ping()
         return pingAveDistance
     }
+
+    //% blockid=MAXBOT_ping_debug
+    //% block="MAXBOT|ping_debug"
+    export function ping_debug(): string {
+        ping()
+        return "pingTotalDistance="+pingTotalDistance+";"+"pingDistance="+pingDistance+";"+"pingZeroResultCounter="+ pingZeroResultCounter +";"+"pingAveDistance="+pingAveDistance+";"+"mbi="+mbi+";"
+    }
+
     //% blockid=MAXBOT_facing
     //% block="MAXBOT|facing "
     export function facing(): string {
