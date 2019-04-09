@@ -1,12 +1,14 @@
 //% color=190 weight=100 icon="\uf1ec" block="MAXBOT" advanced=true
 namespace DFrobotMAXBOT {
     let pingTotalDistance: number = 0
+    let pingProductDistance: number = 1
     let pingAveDistance: number = 0
     let pingDistance: number = 0
     let pingDistanceImmediate: number = 0
     let mbi: number = 0
     let mbi2: number = 0
-    let pingZeroResultCounter: number = 0
+    let mbidiv2: number = 0
+    let mbiInverse: number = 0
     let pingDistances: number[] = [0, 0]
     let pingDeltas: number[] = [0, 0]
     let pingMedianDelta: number = 0
@@ -18,24 +20,24 @@ namespace DFrobotMAXBOT {
     //% block="MAXBOT|go %v"
     export function go(v: string): void {
         if (v == "FORWARD") {
-            basic.showIcon(IconNames.Angry)
+            //basic.showIcon(IconNames.Angry)
             pins.servoWritePin(AnalogPin.P8, 180)
             pins.servoWritePin(AnalogPin.P12, 180)
         } else {
             if (v == "BACK") {
-                basic.showIcon(IconNames.Surprised)
-                pins.servoWritePin(AnalogPin.P8, 0)
-                pins.servoWritePin(AnalogPin.P12, 0)
+                //basic.showIcon(IconNames.Surprised)
+                pins.servoWritePin(AnalogPin.P8, -90)
+                pins.servoWritePin(AnalogPin.P12, -90)
             } else {
                 if (v == "LEFT") {
-                    basic.showIcon(IconNames.Silly)
-                    pins.servoWritePin(AnalogPin.P8, 90)
-                    pins.servoWritePin(AnalogPin.P12, 180)
+                    //basic.showIcon(IconNames.Silly)
+                    pins.servoWritePin(AnalogPin.P8, -90)
+                    pins.servoWritePin(AnalogPin.P12, 90)
                 } else {
                     if (v == "RIGHT") {
-                        basic.showIcon(IconNames.Sword)
-                        pins.servoWritePin(AnalogPin.P8, 180)
-                        pins.servoWritePin(AnalogPin.P12, 90)
+                        //basic.showIcon(IconNames.Sword)
+                        pins.servoWritePin(AnalogPin.P8, 90)
+                        pins.servoWritePin(AnalogPin.P12, -90)
                     } else {
 
                     }
@@ -46,34 +48,53 @@ namespace DFrobotMAXBOT {
     //% blockid=MAXBOT_ping
     //% block="MAXBOT|ping"
     export function ping(): string {
-        let see: string = "NOTHING"
+        let see: string = ""
         mbi = 0
         mbi2 = 0
         pingTotalDistance = 0
-        while (((mbi2 < 200) && ((pingTotalDistance < 15000) || !((mbi == 0) || (mbi % 2 == 0))))) {
+        pingProductDistance = 1
+        while (((mbi2 < 80) && ((pingTotalDistance < 20000) || !((mbi == 0) || (mbi % 2 == 0))))) {
             pingDistanceImmediate = sonar.ping(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 PingUnit.Centimeters
             )
-            if (pingDistanceImmediate > 0) {
+            if ((pingDistanceImmediate > 0) && (pingDistanceImmediate < 1000)) {
                 pingDistances[mbi] = pingDistanceImmediate
                 pingTotalDistance = pingTotalDistance + pingDistanceImmediate
+                pingProductDistance = pingProductDistance * pingDistanceImmediate
                 mbi = mbi + 1
             }
             mbi2 = mbi2 + 1
         }
 
-        // get Median of each set of distance readings
+        // get Median of set of distance readings
         sortedArray = pingDistances.sort()
-        pingDistance = sortedArray[mbi / 2]
-
-        // get arithmetric mean of those medians
+        mbidiv2 = mbi / 2
+        pingDistance = sortedArray[mbidiv2]
         pingAveDistance = pingDistance
 
-        if (pingAveDistance > 140) {
+        while (mbidiv2 > 0) {
+            let pingAveDistToTheMBIpower: number = 1
+            pingAveDistToTheMBIpower = pingAveDistance ** mbi
+            if ((pingAveDistToTheMBIpower + pingAveDistance) >= (pingProductDistance)) {
+                if ((pingAveDistToTheMBIpower - pingAveDistance) <= (pingProductDistance)) {
+                    mbidiv2 = 0
+                } else {
+                    pingAveDistance = pingAveDistance - 1
+                    mbidiv2 = mbidiv2 - 1
+                }
+            } else {
+                pingAveDistance = pingAveDistance + 1
+                mbidiv2 = mbidiv2 - 1
+            }
+        }
+
+        pingAveDistance = Math.floor(pingAveDistance)
+
+        if (pingAveDistance > 90) {
             see = see + "DISTANT"
-        } else if (pingAveDistance > 50) {
+        } else if (pingAveDistance > 30) {
             see = see + "MIDRANGE"
         } else {
             see = see + "CLOSE"
@@ -92,7 +113,7 @@ namespace DFrobotMAXBOT {
     //% block="MAXBOT|ping_debug"
     export function ping_debug(): string {
         ping()
-        return "pingTotalDistance="+pingTotalDistance+";"+"pingDistance="+pingDistance+";"+"pingZeroResultCounter="+ pingZeroResultCounter +";"+"pingAveDistance="+pingAveDistance+";"+"mbi="+mbi+";"
+        return "pingTotalDistance=" + pingTotalDistance + ";" + "pingDistance=" + pingDistance + ";" + "pingAveDistance=" + pingAveDistance + ";" + "mbiInverse=" + mbiInverse + ";" + "mbi=" + mbi + ";" + "mbi2=" + mbi2 + ";"
     }
 
     //% blockid=MAXBOT_facing
