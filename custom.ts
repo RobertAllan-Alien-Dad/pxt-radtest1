@@ -21,23 +21,35 @@ namespace DFrobotMAXBOT {
     export function go(v: string): void {
         if (v == "FORWARD") {
             //basic.showIcon(IconNames.Angry)
-            pins.servoWritePin(AnalogPin.P8, 180)
-            pins.servoWritePin(AnalogPin.P12, 180)
+            pins.servoWritePin(AnalogPin.P8, 100)
+            pins.servoWritePin(AnalogPin.P12, 100)
+            basic.pause(200)
+            pins.servoWritePin(AnalogPin.P8, 90)
+            pins.servoWritePin(AnalogPin.P12, 90)
         } else {
             if (v == "BACK") {
                 //basic.showIcon(IconNames.Surprised)
-                pins.servoWritePin(AnalogPin.P8, -90)
-                pins.servoWritePin(AnalogPin.P12, -90)
+                pins.servoWritePin(AnalogPin.P8, 80)
+                pins.servoWritePin(AnalogPin.P12,80)
+                basic.pause(200)
+                pins.servoWritePin(AnalogPin.P8, 90)
+                pins.servoWritePin(AnalogPin.P12, 90)
             } else {
                 if (v == "LEFT") {
                     //basic.showIcon(IconNames.Silly)
-                    pins.servoWritePin(AnalogPin.P8, -90)
+                    pins.servoWritePin(AnalogPin.P8, 85)
+                    pins.servoWritePin(AnalogPin.P12, 95)
+                    basic.pause(200)
+                    pins.servoWritePin(AnalogPin.P8, 90)
                     pins.servoWritePin(AnalogPin.P12, 90)
                 } else {
                     if (v == "RIGHT") {
                         //basic.showIcon(IconNames.Sword)
+                        pins.servoWritePin(AnalogPin.P8, 95)
+                        pins.servoWritePin(AnalogPin.P12,85)
+                        basic.pause(200)
                         pins.servoWritePin(AnalogPin.P8, 90)
-                        pins.servoWritePin(AnalogPin.P12, -90)
+                        pins.servoWritePin(AnalogPin.P12, 90)
                     } else {
 
                     }
@@ -94,7 +106,7 @@ namespace DFrobotMAXBOT {
 
         if (pingAveDistance > 90) {
             see = see + "DISTANT"
-        } else if (pingAveDistance > 30) {
+        } else if (pingAveDistance > 40) {
             see = see + "MIDRANGE"
         } else {
             see = see + "CLOSE"
